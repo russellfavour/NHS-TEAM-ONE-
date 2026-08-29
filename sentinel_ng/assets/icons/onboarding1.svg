@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <!-- Background leaves -->
+  <g opacity="0.6">
+    <path d="M50,250 Q30,200 50,150 Q70,200 50,250" fill="#4CAF50"/>
+    <path d="M350,250 Q370,200 350,150 Q330,200 350,250" fill="#4CAF50"/>
+    <path d="M80,260 Q60,220 80,180 Q100,220 80,260" fill="#81C784"/>
+    <path d="M320,260 Q340,220 320,180 Q300,220 320,260" fill="#81C784"/>
+  </g>
+  
+  <!-- Man -->
+  <g transform="translate(100, 80)">
+    <!-- Body -->
+    <path d="M30,100 Q30,150 20,180 L-20,180 Q-30,150 -30,100 Z" fill="#4CAF50"/>
+    <!-- Head -->
+    <circle cx="0" cy="60" r="35" fill="#8D6E63"/>
+    <!-- Hair -->
+    <path d="M-35,50 Q-35,20 0,15 Q35,20 35,50 Q35,40 20,35 Q0,30 -20,35 Q-35,40 -35,50" fill="#212121"/>
+    <!-- Face -->
+    <circle cx="-10" cy="58" r="3" fill="#212121"/>
+    <circle cx="10" cy="58" r="3" fill="#212121"/>
+    <path d="M-8,72 Q0,78 8,72" stroke="#212121" stroke-width="2" fill="none"/>
+    <!-- Phone -->
+    <rect x="-5" y="110" width="20" height="35" rx="3" fill="#424242"/>
+    <rect x="-3" y="113" width="16" height="29" rx="2" fill="#1976D2"/>
+  </g>
+  
+  <!-- Woman -->
+  <g transform="translate(250, 80)">
+    <!-- Body -->
+    <path d="M30,100 Q30,150 20,180 L-20,180 Q-30,150 -30,100 Z" fill="#FFFFFF"/>
+    <!-- Head -->
+    <circle cx="0" cy="60" r="35" fill="#8D6E63"/>
+    <!-- Hair (curly) -->
+    <path d="M-40,50 Q-45,20 0,10 Q45,20 40,50 Q45,40 35,35 Q20,28 0,25 Q-20,28 -35,35 Q-45,40 -40,50" fill="#212121"/>
+    <circle cx="-38" cy="45" r="8" fill="#212121"/>
+    <circle cx="38" cy="45" r="8" fill="#212121"/>
+    <!-- Face -->
+    <circle cx="-10" cy="58" r="3" fill="#212121"/>
+    <circle cx="10" cy="58" r="3" fill="#212121"/>
+    <path d="M-6,72 Q0,76 6,72" stroke="#212121" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- Shield icon -->
+  <g transform="translate(200, 50)">
+    <circle cx="0" cy="0" r="35" fill="#E8F5E9"/>
+    <path d="M-15,-20 L15,-20 L15,5 Q15,20 0,25 Q-15,20 -15,5 Z" fill="#4CAF50"/>
+    <path d="M-8,-15 L8,-15 L8,3 Q8,14 0,17 Q-8,14 -8,3 Z" fill="#FFFFFF"/>
+  </g>
+</svg>

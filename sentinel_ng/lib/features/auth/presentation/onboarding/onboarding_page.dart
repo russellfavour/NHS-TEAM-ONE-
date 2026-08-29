@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/constants/app_colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/constants/app_routes.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -16,19 +16,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   final List<Map<String, dynamic>> pages = [
     {
-      'title': 'Report Crimes In Real-time',
-      'description': 'Submit detailed crime reports with GPS location, photos, and audio evidence to help keep your community safe.',
-      'icon': Icons.report_problem_outlined,
+      'title': 'Report Crimes',
+      'subtitle': 'In Real-time',
+      'description': 'Help Keep your community safe by reporting crimes instantly and anonymously.',
+      'illustration': 'assets/icons/onboarding1.svg',
     },
     {
-      'title': 'Get Safe Routes & Alerts',
-      'description': 'Receive real-time safety alerts about nearby incidents and plan safer routes using AI-powered analysis.',
-      'icon': Icons.map_outlined,
+      'title': 'Get Safe Routes',
+      'subtitle': 'and Alerts',
+      'description': 'Find the safest routes, receive alerts and avoid dangerous areas in real-time.',
+      'illustration': 'assets/icons/onboarding2.svg',
     },
     {
-      'title': 'Stay Together, Safer Together',
-      'description': 'Connect with your community. Report suspicious activity, verify reports from others, and build a safer neighborhood.',
-      'icon': Icons.groups_outlined,
+      'title': 'Stronger Together',
+      'subtitle': 'Safer Together',
+      'description': 'Join a community that looks out for each other and builds a safer Nigeria',
+      'illustration': 'assets/icons/onboarding3.svg',
     },
   ];
 
@@ -45,11 +48,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 padding: const EdgeInsets.all(16),
                 child: TextButton(
                   onPressed: () => context.go(AppRoutes.login),
-                  child: const Text('Skip', style: TextStyle(color: AppColors.textSecondary)),
+                  child: const Text(
+                    'Skip',
+                    style: TextStyle(
+                      color: Color(0xFF4CAF50),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ),
             ),
-            
+
             // Page view
             Expanded(
               child: PageView.builder(
@@ -63,18 +73,51 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(page['icon'] as IconData, size: 100, color: AppColors.primaryGreen),
-                        const SizedBox(height: 48),
-                        Text(
-                          page['title']!,
+                        // Illustration
+                        SvgPicture.asset(
+                          page['illustration'] as String,
+                          width: 300,
+                          height: 250,
+                        ),
+                        const SizedBox(height: 40),
+
+                        // Title with green subtitle
+                        RichText(
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '${page['title']}\n',
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  height: 1.3,
+                                ),
+                              ),
+                              TextSpan(
+                                text: page['subtitle'],
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF4CAF50),
+                                  height: 1.3,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 16),
+
+                        // Description
                         Text(
                           page['description']!,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16, color: Colors.grey[600], height: 1.5),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF666666),
+                            height: 1.5,
+                          ),
                         ),
                       ],
                     ),
@@ -83,11 +126,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
 
-            // Page indicators and buttons
+            // Bottom section with indicators and button
             Padding(
               padding: const EdgeInsets.all(32),
               child: Column(
                 children: [
+                  // Page indicators
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(pages.length, (index) {
@@ -96,22 +140,47 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         width: _currentPage == index ? 24 : 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          color: _currentPage == index ? AppColors.primaryGreen : Colors.grey[300],
+                          color: _currentPage == index
+                              ? const Color(0xFF4CAF50)
+                              : const Color(0xFFE0E0E0),
                           borderRadius: BorderRadius.circular(4),
                         ),
                       );
                     }),
                   ),
                   const SizedBox(height: 32),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_currentPage < pages.length - 1) {
-                        _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                      } else {
-                        context.go(AppRoutes.login);
-                      }
-                    },
-                    child: Text(_currentPage == pages.length - 1 ? 'Get Started' : 'Next'),
+
+                  // Next/Get Started button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_currentPage < pages.length - 1) {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        } else {
+                          context.go(AppRoutes.login);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4CAF50),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: Text(
+                        _currentPage == pages.length - 1 ? 'Get Started' : 'Next',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
