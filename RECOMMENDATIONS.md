@@ -1,12 +1,16 @@
-# 🛡️ Sentinel NG — Flutter Crime Reporting System
-## Architecture & Implementation Recommendations
+# 🛡️ Sentinel NG — Crime Location Reporting System
+## Complete Architecture & Implementation Recommendations
 
-> **Tech Stack**: Flutter (Frontend) · Node.js + Express (Backend) · MongoDB (Database)
+> **Tech Stack**: Flutter (Mobile App) · React/Vue.js (Admin Web Portal) · Node.js + Express (Backend API) · MongoDB (Database)
 > **Purpose**: Competition-ready, production-quality crime reporting platform for Nigerian communities.
+>
+> **TOR Compliance**: Full coverage of all Terms of Reference requirements including admin dashboard, verification workflow, risk tagging, analytics & reports, and security agency dispatch.
 
 ---
 
-## 1. 📱 Complete Screen Inventory (26 Screens)
+## 1. 📱 Complete Screen Inventory
+
+### Part A — Mobile App Screens (User-Facing)
 
 | # | Screen Name | Category | Description |
 |---|-------------|----------|-------------|
@@ -28,10 +32,28 @@
 | 21 | CrimeDetails | Core App | Detailed crime report view with evidence thumbnails |
 | 22 | CrimeMap | Core App | Interactive map with heat zones, filters, incident markers |
 | 23 | Notification | Core App | Categorized alerts (All, Alerts, Updates, System) |
-| 24 | Search | Core App | Location/crime search with recent & popular searches |
+| 24 | Search | Core App | Location/crime type search with recent & popular searches |
 | 25 | SafetyScore | Profile Sub-screen | Detailed safety score breakdown with metrics |
 | 26 | Profile | Core App | User profile, reports count, settings, emergency contacts |
 | 27 | Reportsubmitted | Reporting Wizard | Success confirmation with report ID (#SR2387) |
+
+### Part B — Mobile Screens for Verification & Tracking (TOR Gap-Fillers)
+
+| # | Screen Name | Category | Description |
+|---|-------------|----------|-------------|
+| 28 | MyReportsStatus | Profile Sub-screen | List of user's reports with status badges (Submitted/Under Review/Verified/Dismissed) |
+| 29 | ReportStatusTimeline | Crime Detail Add-on | Visual progress tracker showing each verification stage with timestamps |
+| 30 | SafePlaceMarkers | Map Add-on | User-saved safe locations (police stations, hospitals, churches/mosques) overlaid on map |
+
+### Part C — Admin Web Portal Screens (See [ADMIN-RECOMMENDATIONS.md](./ADMIN-RECOMMENDATIONS.md))
+
+| # | Screen Name | Category | Description |
+|---|-------------|----------|-------------|
+| A1–A27 | See ADMIN doc | Admin Portal | Complete admin dashboard with verification, analytics, dispatch, and user management |
+
+> **Total System Screens**: 54 (30 mobile + 24 web admin)
+
+**See [ADMIN-RECOMMENDATIONS.md](./ADMIN-RECOMMENDATIONS.md) for the complete admin screen inventory.**
 
 ---
 
@@ -76,7 +98,8 @@ lib/
 │   │   ├── notification_model.dart
 │   │   ├── location_model.dart
 │   │   ├── evidence_model.dart
-│   │   └── safety_score_model.dart
+│   │   ├── safety_score_model.dart
+│   │   └── report_status_model.dart   # NEW: Status tracking model
 │   ├── repositories/                  # Repository interface implementations
 │   │   ├── auth_repository_impl.dart
 │   │   ├── crime_repository_impl.dart
@@ -86,7 +109,8 @@ lib/
 │   │   ├── remote/
 │   │   │   ├── auth_remote_source.dart
 │   │   │   ├── crime_remote_source.dart
-│   │   │   └── notification_remote_source.dart
+│   │   │   ├── notification_remote_source.dart
+│   │   │   └── admin_remote_source.dart  # NEW: Admin API calls from mobile
 │   │   └── local/
 │   │       ├── prefs_local_source.dart
 │   │       └── hive_adapters.g.dart
@@ -151,13 +175,15 @@ lib/
 │   │   ├── presentation/
 │   │   │   ├── crime_map_screen.dart          # Interactive heatmap + markers
 │   │   │   ├── widgets/map_filter_bar.dart    # All/Robbery/Theft/Assault tabs
-│   │   │   └── widgets/crime_marker_cluster.dart
+│   │   │   ├── widgets/crime_marker_cluster.dart
+│   │   │   └── widgets/safe_place_overlay.dart  # NEW: Safe place markers
 │   │   └── presentation/bloc/map_bloc.dart
 │   │
 │   ├── crime_details/                 # 🔍 Crime Detail feature
 │   │   ├── presentation/
 │   │   │   ├── crime_detail_screen.dart       # Full report view with evidence
-│   │   │   └── widgets/evidence_gallery.dart  # Photo/video carousel
+│   │   │   ├── widgets/evidence_gallery.dart  # Photo/video carousel
+│   │   │   └── widgets/report_status_timeline.dart  # NEW: Status tracker
 │   │   └── presentation/bloc/crime_detail_bloc.dart
 │   │
 │   ├── notifications/                 # 🔔 Notifications feature
@@ -177,6 +203,7 @@ lib/
 │       │   ├── profile_screen.dart            # User info, settings entry points
 │       │   ├── safety_score_detail_screen.dart # Detailed score breakdown
 │       │   ├── my_reports_screen.dart         # List of user's reports
+│       │   ├── my_reports_status_screen.dart  # NEW: Status tracking list
 │       │   ├── saved_locations_screen.dart    # Saved places
 │       │   ├── emergency_contact_screen.dart  # Emergency contact management
 │       │   └── settings_screen.dart           # App preferences, privacy
@@ -227,10 +254,10 @@ HomeDashboard ←→ CrimeMap ←→ [FAB] Reporting Wizard ←→ Notifications
 | Tab | Screen | Purpose |
 |-----|--------|---------|
 | ① Home | HomeDashboard | Central hub — safety score, quick actions, recent alerts |
-| ② Map | CrimeMap | Interactive heatmap with filterable crime markers |
+| ② Map | CrimeMap | Interactive heatmap with filterable crime markers + safe places overlay |
 | ③ FAB (Center) | Reporting Wizard / SOS | Two modes: Report Crime OR Emergency SOS |
 | ④ Alerts | Notifications | Categorized notification feed |
-| ⑤ Profile | Profile | User settings, report history, safety insights |
+| ⑤ Profile | Profile | User settings, report history, safety insights, **report status tracking** |
 
 ### Phase C: Crime Reporting Wizard (Multi-Step Flow — Screens 12–27)
 
@@ -334,6 +361,30 @@ This is the **heart of your application**. The wizard should feel like a guided 
 [Route displayed on map with safety overlay]
 ```
 
+### Phase F: Report Status Tracking Flow (NEW — TOR Gap-Filler)
+
+```
+[User navigates to Profile → My Reports or taps a notification about their report]
+       ↓
+┌─────────────────────────────────────────────┐
+│ MyReportsStatus Screen                      │
+│   • List of all submitted reports           │
+│   • Status badges: Submitted / Under Review │
+│     / Verified / Dismissed                  │
+│   • Tap any report to see details           │
+└───────────────────┬─────────────────────────┘
+                    ↓ (tap a report)
+┌─────────────────────────────────────────────┐
+│ ReportStatusTimeline                        │
+│   • Visual progress bar with stages:        │
+│     1. Submitted → 2. Under Review          │
+│     3. Verified/Dismissed                   │
+│   • Timestamps for each stage transition    │
+│   • Admin notes (if dismissed)              │
+│   • Risk level assigned (High/Med/Low)      │
+└─────────────────────────────────────────────┘
+```
+
 ---
 
 ## 4. 🎨 Design System & Theme Guidelines
@@ -369,6 +420,7 @@ Small Text:             12px, Regular
 - **`CrimeTypeChip`** — Colored circular icon + crime name row
 - **`AlertCard`** — Notification-style card with type badge + timestamp
 - **`SafetyScoreGauge`** — Circular progress indicator for scores
+- **`StatusBadge`** — NEW: Color-coded status pill (Submitted=blue, Under Review=yellow, Verified=green, Dismissed=red)
 
 ---
 
@@ -387,9 +439,10 @@ backend/
 │   └── cloudinary.js                  # Media storage config
 │
 ├── middleware/
-│   ├── auth.middleware.js             # JWT verification
+│   ├── auth.middleware.js             # JWT verification (user + admin roles)
 │   ├── validate.middleware.js         # Request validation
 │   ├── upload.middleware.js           # Multer file uploads
+│   ├── admin.middleware.js            # NEW: Admin-only access control
 │   └── error.middleware.js            # Global error handler
 │
 ├── controllers/
@@ -398,7 +451,10 @@ backend/
 │   ├── notification.controller.js
 │   ├── map.controller.js
 │   ├── evidence.controller.js
-│   └── profile.controller.js
+│   ├── profile.controller.js
+│   ├── admin.controller.js            # NEW: Admin dashboard data aggregation
+│   ├── dispatch.controller.js         # NEW: SOS emergency dispatch management
+│   └── analytics.controller.js        # NEW: Analytics & report generation
 │
 ├── routes/
 │   ├── auth.routes.js                 # POST /register, /login, /forgot-password
@@ -406,24 +462,31 @@ backend/
 │   ├── notification.routes.js         # GET/PUT notifications
 │   ├── map.routes.js                  # GET heatmap data, nearby crimes
 │   ├── evidence.routes.js             # POST upload, DELETE media
-│   └── profile.routes.js              # GET/PUT user profile
+│   ├── profile.routes.js              # GET/PUT user profile
+│   ├── admin.routes.js                # NEW: Admin dashboard endpoints
+│   └── dispatch.routes.js             # NEW: Emergency dispatch endpoints
 │
 ├── models/                            # Mongoose schemas
 │   ├── User.js
 │   ├── CrimeReport.js
 │   ├── Notification.js
 │   ├── Evidence.js
-│   └── SafetyScore.js
+│   ├── SafetyScore.js
+│   ├── ResponderLog.js                # NEW: SOS responder tracking
+│   └── BroadcastAlert.js              # NEW: Admin broadcast notifications
 │
 ├── services/
 │   ├── email.service.js               # Transactional emails
 │   ├── push-notification.service.js   # FCM push notifications
 │   ├── geolocation.service.js         # Distance/radius calculations
-│   └── ai-safety.service.js           # Route safety scoring logic
+│   ├── ai-safety.service.js           # Route safety scoring logic
+│   ├── analytics.service.js           # NEW: Aggregation & trend analysis
+│   └── report-export.service.js       # NEW: PDF/CSV report generation
 │
 ├── jobs/                              # Scheduled tasks (node-cron)
 │   ├── cleanup-uploads.js             # Remove expired temp files
-│   └── generate-daily-alerts.js       # Compile daily safety digest
+│   ├── generate-daily-alerts.js       # Compile daily safety digest
+│   └── update-safety-scores.js        # NEW: Recalculate user safety scores
 │
 └── utils/
     ├── logger.js                      # Winston/Pino logging
@@ -461,52 +524,74 @@ backend/
 }
 ```
 
-#### `crime_reports` Collection
+#### `crime_reports` Collection (Enhanced)
 ```javascript
 {
   _id: ObjectId,
   reportId: { type: String, unique: true },  // e.g., "SR2387"
   reporterId: { type: ObjectId, ref: 'User' },
-  status: { type: String, enum: ['submitted', 'under_review', 'verified', 'dismissed'] },
-  
+  status: {
+    type: String,
+    enum: ['submitted', 'under_review', 'verified', 'dismissed'],
+    default: 'submitted'
+  },
+
+  // Verification history (NEW)
+  verificationHistory: [{
+    action: { type: String, enum: ['submitted', 'review_started', 'verified', 'dismissed'] },
+    performedBy: ObjectId,       // Admin who took the action
+    timestamp: Date,
+    notes: String                // Admin comments visible to reporter
+  }],
+
   crimeType: { type: String, enum: [
-    'armed_robbery', 'theft', 'assault', 
+    'armed_robbery', 'theft', 'assault',
     'vandalism', 'cyber_crime', 'suspicious_activity', 'others'
   ]},
-  
+
   location: {
     address: String,
     coordinates: { type: [Number], index: '2dsphere' }, // [lng, lat]
     landmark: String
   },
-  
+
   description: String,
   additionalDetails: String,
-  
+
   incidentDateTime: Date,
-  
+
   witnesses: [{
     name: String,           // Can be empty for anonymity
     phone: String,          // Can be empty
     statement: String
   }],
-  
+
   suspectInfo: {
     description: String,
     vehicleInfo: String,
     numberOfSuspects: Number
   },
-  
+
   evidence: [{
     type: { type: String, enum: ['photo', 'video', 'audio'] },
     url: String,            // Cloudinary URL
     uploadedAt: Date
   }],
-  
+
   isAnonymous: Boolean,     // Hide reporter identity publicly
-  verifiedBy: ObjectId,     // Admin who verified
+
+  // Risk tagging (NEW - TOR requirement)
+  riskLevel: {
+    type: String,
+    enum: ['high', 'medium', 'low'],
+    default: 'pending'
+  },
+  riskTaggedBy: ObjectId,   // Admin who assigned risk level
+  riskTaggedAt: Date,
+
+  verifiedBy: ObjectId,     // Admin who verified/dismissed
   verificationDate: Date,
-  
+
   createdAt: Date,
   updatedAt: Date
 }
@@ -526,63 +611,146 @@ backend/
 }
 ```
 
+#### `responder_logs` Collection (NEW — TOR Gap-Filler)
+```javascript
+{
+  _id: ObjectId,
+  sosAlertId: { type: String, unique: true }, // e.g., "SOS-2024-001"
+  reporterId: { type: ObjectId, ref: 'User' },
+  status: { type: String, enum: ['triggered', 'acknowledged', 'en_route', 'on_scene', 'resolved'] },
+
+  location: {
+    coordinates: { type: [Number], index: '2dsphere' }, // Reporter's live coords
+    address: String
+  },
+
+  assignedResponderId: ObjectId,   // Admin/responder who accepted the SOS
+  acknowledgedAt: Date,
+  enRouteAt: Date,
+  onSceneAt: Date,
+  resolvedAt: Date,
+
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+#### `broadcast_alerts` Collection (NEW — TOR Gap-Filler)
+```javascript
+{
+  _id: ObjectId,
+  title: String,
+  message: String,
+  targetAudience: { type: String, enum: ['all', 'region', 'verified_users'] },
+  regionFilter: {                    // Optional: targeted geographic area
+    coordinates: [[Number]],         // Polygon for geo-fencing
+    radius: Number                   // Or circle radius in km
+  },
+  priority: { type: String, enum: ['low', 'medium', 'high', 'critical'] },
+  isActive: Boolean,                 // Soft delete toggle
+  sentAt: Date,                      // When broadcast was pushed via FCM
+  deliveredCount: Number,            // Analytics tracking
+  createdBy: ObjectId,               // Admin who created it
+  createdAt: Date
+}
+```
+
 ---
 
 ## 6. 📐 API Endpoints Reference
 
 ### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Create new user account |
-| POST | `/api/auth/login` | Authenticate & return JWT |
-| POST | `/api/auth/forgot-password` | Request password reset |
-| PUT | `/api/auth/reset-password` | Reset with token |
-| GET | `/api/auth/me` | Get current user profile |
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/auth/register` | Create new user account | Public |
+| POST | `/api/auth/login` | Authenticate & return JWT | Public |
+| POST | `/api/auth/admin-login` | Admin-specific login (enhanced security) | Public |
+| POST | `/api/auth/forgot-password` | Request password reset | Public |
+| PUT | `/api/auth/reset-password` | Reset with token | Public |
+| GET | `/api/auth/me` | Get current user profile | User/Admin |
 
-### Crime Reports
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/crimes` | Submit new crime report |
-| GET | `/api/crimes` | List crimes (paginated, filterable) |
-| GET | `/api/crimes/:id` | Get single crime detail |
-| PUT | `/api/crimes/:id` | Update report status (admin) |
-| DELETE | `/api/crimes/:id` | Delete report (admin) |
-| GET | `/api/crimes/search` | Search by location/type/date |
-| GET | `/api/crimes/heatmap` | Get heatmap data for map view |
+### Crime Reports (User-Facing)
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/crimes` | Submit new crime report | User |
+| GET | `/api/crimes` | List crimes (paginated, filterable) | Public* |
+| GET | `/api/crimes/:id` | Get single crime detail | Public* |
+| GET | `/api/crimes/my-reports` | List user's submitted reports | User |
+| GET | `/api/crimes/:id/status` | Track report status updates | User (own only) |
+| GET | `/api/crimes/search` | Search by location/type/date | Public* |
+| GET | `/api/crimes/heatmap` | Get heatmap data for map view | Public* |
 
-### User Reports
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/crimes/my-reports` | List user's submitted reports |
-| GET | `/api/crimes/:id/status` | Track report status updates |
+> *Public*: Verified reports only; unverified hidden from public API.
+
+### Crime Reports (Admin-Facing — NEW)
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| PUT | `/api/crimes/:id/verify` | Approve a report (set status=verified) | Admin |
+| PUT | `/api/crimes/:id/dismiss` | Reject a report (set status=dismissed) | Admin |
+| PUT | `/api/crimes/:id/review-start` | Mark as under_review | Admin |
+| PUT | `/api/crimes/:id/risk-level` | Assign risk level (high/medium/low) | Admin |
+| PUT | `/api/crimes/:id/admin-notes` | Add admin notes visible to reporter | Admin |
+| GET | `/api/admin/reports/pending` | List all reports awaiting review | Admin |
+| GET | `/api/admin/reports/by-status` | Filter by status with pagination | Admin |
+| DELETE | `/api/crimes/:id` | Delete report (admin) | Admin |
+
+### User Management (Admin-Facing — NEW)
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/admin/users` | List all registered users | Admin |
+| GET | `/api/admin/users/:id` | Get user details + report history | Admin |
+| PUT | `/api/admin/users/:id/ban` | Suspend/ban a user account | Admin |
+| PUT | `/api/admin/users/:id/unban` | Reactivate a banned user | Admin |
+| GET | `/api/admin/users/stats` | User statistics (new users, active, etc.) | Admin |
 
 ### Map & Safety
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/map/nearby` | Get crimes within radius |
-| POST | `/api/safety/route` | Calculate safe route + score |
-| GET | `/api/safety/score/:userId` | Get user's safety score breakdown |
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/map/nearby` | Get crimes within radius | Public* |
+| POST | `/api/safety/route` | Calculate safe route + score | User |
+| GET | `/api/safety/score/:userId` | Get user's safety score breakdown | User/Admin |
+| GET | `/api/map/safe-places` | List saved safe places (police, hospitals) | Public* |
 
 ### Evidence
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/evidence/upload` | Upload photo/video/audio (multipart) |
-| DELETE | `/api/evidence/:id` | Remove evidence |
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/evidence/upload` | Upload photo/video/audio (multipart) | User |
+| DELETE | `/api/evidence/:id` | Remove evidence | User/Admin |
 
 ### Notifications
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/notifications` | List user notifications |
-| PUT | `/api/notifications/:id/read` | Mark as read |
-| PUT | `/api/notifications/mark-all-read` | Bulk mark all read |
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/notifications` | List user notifications | User |
+| PUT | `/api/notifications/:id/read` | Mark as read | User |
+| PUT | `/api/notifications/mark-all-read` | Bulk mark all read | User |
 
 ### Profile
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/profile` | Get full profile |
-| PUT | `/api/profile` | Update profile info |
-| PUT | `/api/profile/emergency-contacts` | Update emergency contacts |
-| GET | `/api/profile/saved-locations` | List saved locations |
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/profile` | Get full profile | User |
+| PUT | `/api/profile` | Update profile info | User |
+| PUT | `/api/profile/emergency-contacts` | Update emergency contacts | User |
+| GET | `/api/profile/saved-locations` | List saved locations | User |
+
+### SOS Emergency Dispatch (NEW — TOR Gap-Filler)
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/dispatch/sos-trigger` | Trigger emergency SOS alert | User |
+| GET | `/api/dispatch/sos/:alertId` | Get SOS alert status + ETA | User (own only) |
+| PUT | `/api/dispatch/sos/acknowledge` | Responder acknowledges SOS | Admin |
+| PUT | `/api/dispatch/sos/update-status` | Update responder status (en_route, on_scene, resolved) | Admin |
+
+### Analytics & Reports (NEW — TOR Gap-Filler)
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/admin/analytics/overview` | Dashboard overview stats | Admin |
+| GET | `/api/admin/analytics/crime-types` | Crime type distribution (pie chart data) | Admin |
+| GET | `/api/admin/analytics/trends/daily` | Daily crime count trend (line chart) | Admin |
+| GET | `/api/admin/analytics/trends/weekly` | Weekly crime count trend | Admin |
+| GET | `/api/admin/analytics/trends/monthly` | Monthly crime count trend | Admin |
+| GET | `/api/admin/analytics/hotspots` | Top 10 crime hotspot locations | Admin |
+| GET | `/api/admin/reports/export/csv` | Export filtered reports as CSV | Admin |
+| GET | `/api/admin/reports/export/pdf` | Generate PDF analytics report | Admin |
 
 ---
 
@@ -613,7 +781,7 @@ backend/
 
 1. **Seed Data**: Pre-populate MongoDB with realistic Nigerian crime data for the competition demo
 2. **Mock GPS**: Ability to simulate different locations for map demonstration
-3. **Live SOS Demo**: Show real-time location sharing on a secondary screen
+3. **Live SOS Demo**: Show real-time location sharing on a secondary screen (mobile + admin)
 4. **Report Flow Speed**: Ensure the reporting wizard completes in under 60 seconds
 5. **Error Scenarios**: Prepare graceful error states (no network, invalid input)
 
@@ -642,16 +810,36 @@ backend/
 - [ ] Safe Route planning screen
 - [ ] Backend map/heatmap endpoints
 
-### Phase 4: Polish & Extras (Days 11–13)
+### Phase 4: Admin Portal — Web Dashboard (Days 11–15)
+> **See [ADMIN-RECOMMENDATIONS.md](./ADMIN-RECOMMENDATIONS.md) for full admin development plan**
+- [ ] Set up React/Vue.js + Tailwind CSS project
+- [ ] Build AdminLogin screen with enhanced security
+- [ ] Build AdminDashboard overview (stats cards, mini-charts)
+- [ ] Implement ReportReviewList with status filters
+- [ ] Build ReportDetailReview for verification workflow
+- [ ] Add RiskTaggingPanel to assign risk levels
+- [ ] Create AnalyticsDashboard with charts (fl_chart equivalent for web)
+- [ ] Implement UserManagement screen
+
+### Phase 5: Verification & Tracking Features (Days 16–18)
+- [ ] MyReportsStatus screen in Flutter mobile app
+- [ ] ReportStatusTimeline visual tracker
+- [ ] Backend verification workflow endpoints
+- [ ] Push notification integration for status updates
+- [ ] SafePlaceMarkers overlay on CrimeMap
+
+### Phase 6: Analytics, Dispatch & Polish (Days 19–22)
+- [ ] Admin analytics charts (crime trends, hotspots)
+- [ ] SOS dispatch management in admin portal
+- [ ] Broadcast alert system for admins
+- [ ] Report export (CSV/PDF generation)
 - [ ] Notifications screen with categorization
 - [ ] Search functionality
 - [ ] Profile + Settings screens
-- [ ] Safety Score detail breakdown
-- [ ] Crime Detail view with evidence gallery
 
-### Phase 5: Competition Prep (Days 14–15)
+### Phase 7: Competition Prep (Days 23–25)
 - [ ] Seed database with demo data
-- [ ] End-to-end testing of all flows
+- [ ] End-to-end testing of all flows (mobile + admin)
 - [ ] Performance optimization
 - [ ] Error handling polish
 - [ ] Presentation rehearsal
@@ -678,6 +866,21 @@ backend/
 | Push Notifications | `firebase_messaging` | FCM integration |
 | Environment Config | `flutter_dotenv` | .env file support |
 
+### Recommended Web Admin Packages (React/Vue + Tailwind CSS)
+
+| Purpose | Package | Note |
+|---------|---------|------|
+| Framework | `react` or `vue@3` | Component-based UI |
+| Styling | `tailwindcss` | Utility-first CSS framework |
+| State Management | `zustand` (React) / `pinia` (Vue) | Lightweight state management |
+| Routing | `react-router-dom` / `vue-router` | Client-side routing |
+| HTTP Client | `axios` | Request interceptors, error handling |
+| Charts | `recharts` or `chart.js` + `vue-chartjs` | Analytics dashboard charts |
+| Maps | `leaflet-react` or `@amap/amap-vue` | Interactive map for admin heatmap |
+| Data Tables | `ag-grid-react` / `vuetify-data-tables` | Paginated, filterable report tables |
+| File Export | `jspdf` + `xlsx` | PDF and CSV report generation |
+| Icons | `lucide-react` or `@mdi/font` | Consistent icon system |
+
 ---
 
 ## 10. 🎯 Key Differentiators for Competition Judges
@@ -689,9 +892,12 @@ backend/
 5. **Evidence-Rich Reports** — Photos, video, audio recording directly in the report flow
 6. **Anonymous Reporting Option** — Privacy-first design encouraging community participation
 7. **Nigerian Context** — Localized for Nigerian cities (Lagos focus), addresses real local needs
+8. **Complete Admin Dashboard** — Full TOR compliance with verification workflow, risk tagging, analytics & reports, and security agency dispatch *(NEW)*
+9. **Dual-Platform Architecture** — Mobile app for citizens + Web portal for agencies *(NEW)*
 
 ---
 
-*Document generated from analysis of 26 UI/UX screen designs.*
-*Tech Stack: Flutter · Node.js + Express · MongoDB*
+*Document generated from analysis of 26 UI/UX screen designs + TOR gap analysis.*
+*Tech Stack: Flutter (Mobile) · React/Vue.js (Admin Web) · Node.js + Express · MongoDB*
 *Architecture Pattern: Clean Architecture with BLoC state management*
+*Total Screens: 54 (30 mobile + 24 web admin)*

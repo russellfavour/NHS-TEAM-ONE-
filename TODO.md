@@ -1,56 +1,55 @@
-# Sentinel NG - Development Roadmap
+# 🔗 Recommendation 4 Implementation — Hybrid Backend + Flutter App
 
-## Phase 1: Architecture & Backend Setup (The Foundation)
-- [ ] **Database Schema Design**
-    - [ ] User profiles (Auth, roles, safety score metrics).
-    - [ ] Incident/Crime reports (Type, location, timestamps, evidence URLs).
-    - [ ] Real-time Emergency logs (SOS triggers, responder tracking).
-    - [ ] Notifications & Alerts history.
-- [ ] **Backend API (Node.js/Express)**
-    - [ ] Authentication System (JWT, Google/Apple OAuth).
-    - [ ] CRUD for Crime Reports.
-    - [ ] Geo-spatial queries (PostGIS or MongoDB GeoJSON) for Map & Heatmaps.
-    - [ ] Socket.io integration for real-time SOS/Emergency tracking.
-- [ ] **Cloud Infrastructure**
-    - [ ] Setup AWS/Firebase for image/video storage.
-    - [ ] Setup Push Notification service (FCM).
+## Phase 1: Backend Changes (Next.js crime-location-reporting-system)
+- [x] **Prisma Schema Extension** — Add SosAlert & BroadcastAlert models
+- [ ] Run Prisma migration to apply schema changes
+- [ ] **CORS Middleware** — src/middleware.ts for Flutter requests
+- [ ] **Auth Token Handling** — Support Bearer token in NextAuth v5
+- [ ] **New API Route: `/api/admin/broadcast`** — Broadcast alerts (POST/GET)
+- [ ] **New API Route: `/api/admin/analytics`** — Analytics aggregation (GET)
+- [ ] **New API Route: `/api/admin/dispatch/active`** — SOS dispatch tracking (GET)
 
-## Phase 2: Flutter Frontend - Core UI & Navigation
-- [ ] **Design System Implementation**
-    - [ ] Define Color Palette (Sentinel Green, Dark/Light modes).
-    - [ ] Typography & Component Library (Buttons, Cards, Inputs).
-- [ ] **Authentication Flow**
-    - [ ] Splash $\rightarrow$ Onboarding $\rightarrow$ Login/Register.
-- [ ] **Main Shell**
-    - [ ] Bottom Navigation Bar implementation.
-    - [ ] Home Dashboard UI.
+## Phase 2: Flutter App Foundation
+- [ ] Update pubspec.yaml with all required dependencies
+- [ ] Create core constants (colors, strings, routes)
+- [ ] Create theme system (light/dark mode)
+- [ ] Create reusable widgets (CustomButton, CustomTextField, etc.)
+- [ ] Create API client service with Dio + secure storage
+- [ ] Create error handling infrastructure
 
-## Phase 3: Feature Implementation - Reporting & Map
-- [ ] **Interactive Crime Map**
-    - [ ] Integration with Google Maps/Mapbox.
-    - [ ] Custom Markers & Cluster implementation.
-    - [ ] Heatmap layer implementation.
-- [ ] **Multi-step Reporting Flow**
-    - [ ] State management for the multi-step form (Riverpod/Bloc).
-    - [ ] Image/Video picker integration.
-    - [ ] Location picking (GPS + Manual).
+## Phase 3: Flutter Data Layer
+- [ ] Create data models (User, CrimeReport, Notification, Evidence, etc.)
+- [ ] Create repositories (Auth, Crime, Notification)
+- [ ] Create remote data sources
+- [ ] Create local storage service
 
-## Phase 4: Feature Implementation - Safety & AI
-- [ ] **SOS & Live Emergency**
-    - [ ] Real-time location streaming (User $\rightarrow$ Server $\rightarrow$ Responder).
-    - [ ] "Live Emergency" UI with active tracking.
-- [ ] **AI Safe Route Planner**
-    - [ ] Integration with Routing API.
-    - [ ] Logic to overlay crime density on routes to calculate "Safety Score".
-- [ ] **AI Assistant (Chatbot)**
-    - [ ] Integration with LLM (OpenAI/Gemini) for voice/text reporting assistance.
+## Phase 4: Flutter Auth Feature
+- [ ] Splash screen
+- [ ] Onboarding screens (3 pages)
+- [ ] Login screen
+- [ ] Register screen
 
-## Phase 5: Polish, UX & Advanced Features
-- [ ] **Micro-interactions** (Fluid animations for transitions and button presses).
-- [ ] **Notification System** (Real-time alerts for nearby crimes).
-- [ ] **Profile & History** (Viewing past reports and saved locations).
+## Phase 5: Flutter Core Features
+- [ ] Home Dashboard with safety score + quick actions
+- [ ] Bottom navigation bar (5 tabs)
+- [ ] Crime Map with markers and filters
+- [ ] SOS Emergency screen
+- [ ] Notifications screen
+- [ ] Profile screen
 
-## Phase 6: Testing & Deployment
-- [ ] Unit & Integration testing (Frontend & Backend).
-- [ ] Load testing (Simulating high-traffic during emergencies).
-- [ ] Final UI/UX Audit.
+## Phase 6: Flutter Reporting Wizard
+- [ ] Multi-step reporting wizard orchestrator
+- [ ] Select crime type screen
+- [ ] Select location (map) screen
+- [ ] Incident description screen
+- [ ] Witness information screen
+- [ ] Suspect information screen
+- [ ] Evidence collection screen
+- [ ] Report success screen
+
+## Phase 7: Flutter Additional Features
+- [ ] Crime detail screen with status timeline
+- [ ] Search screen
+- [ ] Safety score detail screen
+- [ ] My reports status screen
+- [ ] Safe place markers on map
