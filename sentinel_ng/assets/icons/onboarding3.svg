@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <!-- Background leaves -->
+  <g opacity="0.6">
+    <path d="M50,250 Q30,200 50,150 Q70,200 50,250" fill="#4CAF50"/>
+    <path d="M350,250 Q370,200 350,150 Q330,200 350,250" fill="#4CAF50"/>
+    <path d="M80,260 Q60,220 80,180 Q100,220 80,260" fill="#81C784"/>
+    <path d="M320,260 Q340,220 320,180 Q300,220 320,260" fill="#81C784"/>
+  </g>
+  
+  <!-- Woman (left) -->
+  <g transform="translate(90, 100)">
+    <!-- Body -->
+    <path d="M25,80 Q25,130 15,160 L-15,160 Q-25,130 -25,80 Z" fill="#4CAF50"/>
+    <!-- Head -->
+    <circle cx="0" cy="50" r="30" fill="#8D6E63"/>
+    <!-- Hair (updo) -->
+    <path d="M-30,40 Q-35,15 0,10 Q35,15 30,40 Q35,30 20,25 Q0,20 -20,25 Q-35,30 -30,40" fill="#212121"/>
+    <circle cx="0" cy="8" r="12" fill="#212121"/>
+    <!-- Face -->
+    <circle cx="-8" cy="48" r="2.5" fill="#212121"/>
+    <circle cx="8" cy="48" r="2.5" fill="#212121"/>
+    <path d="M-5,60 Q0,64 5,60" stroke="#212121" stroke-width="1.5" fill="none"/>
+  </g>
+  
+  <!-- Child (center) -->
+  <g transform="translate(200, 130)">
+    <!-- Body -->
+    <path d="M20,60 Q20,100 10,130 L-10,130 Q-20,100 -20,60 Z" fill="#FFFFFF"/>
+    <!-- Head -->
+    <circle cx="0" cy="35" r="25" fill="#8D6E63"/>
+    <!-- Hair -->
+    <path d="M-25,30 Q-25,10 0,5 Q25,10 25,30 Q25,22 15,18 Q0,14 -15,18 Q-25,22 -25,30" fill="#212121"/>
+    <!-- Face -->
+    <circle cx="-6" cy="33" r="2" fill="#212121"/>
+    <circle cx="6" cy="33" r="2" fill="#212121"/>
+    <path d="M-4,42 Q0,45 4,42" stroke="#212121" stroke-width="1.5" fill="none"/>
+  </g>
+  
+  <!-- Man (right) -->
+  <g transform="translate(310, 100)">
+    <!-- Body -->
+    <path d="M25,80 Q25,130 15,160 L-15,160 Q-25,130 -25,80 Z" fill="#4CAF50"/>
+    <!-- Head -->
+    <circle cx="0" cy="50" r="30" fill="#8D6E63"/>
+    <!-- Hair (short) -->
+    <path d="M-30,42 Q-30,18 0,12 Q30,18 30,42 Q30,35 20,30 Q0,25 -20,30 Q-30,35 -30,42" fill="#212121"/>
+    <!-- Beard -->
+    <path d="M-15,55 Q0,65 15,55" stroke="#212121" stroke-width="2" fill="none"/>
+    <!-- Face -->
+    <circle cx="-8" cy="48" r="2.5" fill="#212121"/>
+    <circle cx="8" cy="48" r="2.5" fill="#212121"/>
+    <path d="M-5,60 Q0,64 5,60" stroke="#212121" stroke-width="1.5" fill="none"/>
+  </g>
+  
+  <!-- Shield with checkmark -->
+  <g transform="translate(200, 30)">
+    <path d="M-25,-20 L25,-20 L25,5 Q25,25 0,35 Q-25,25 -25,5 Z" fill="#4CAF50"/>
+    <path d="M-18,-15 L18,-15 L18,3 Q18,19 0,27 Q-18,19 -18,3 Z" fill="#66BB6A"/>
+    <!-- Checkmark -->
+    <path d="M-10,5 L-3,12 L12,-5" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Heart icon -->
+  <g transform="translate(280, 35)">
+    <rect x="-15" y="-12" width="30" height="24" rx="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+    <!-- Heart inside -->
+    <path d="M0,-2 Q-8,-8 -12,0 Q-15,6 0,12 Q15,6 12,0 Q8,-8 0,-2" fill="#4CAF50"/>
+  </g>
+</svg>

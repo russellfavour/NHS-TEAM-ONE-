@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240">
+  <defs>
+    <!-- Gradient for the outer shield border -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7CFC00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#32CD32;stop-opacity:1" />
+    </linearGradient>
+    <!-- Gradient for inner shield -->
+    <linearGradient id="innerShieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer shield with green border -->
+  <path d="M100,10 L185,45 L185,120 C185,175 140,215 100,230 C60,215 15,175 15,120 L15,45 Z"
+        fill="#0A1F0A" stroke="url(#shieldGrad)" stroke-width="8" stroke-linejoin="round"/>
+  
+  <!-- Inner shield -->
+  <path d="M100,35 L160,62 L160,118 C160,162 128,195 100,207 C72,195 40,162 40,118 L40,62 Z"
+        fill="url(#innerShieldGrad)" stroke="#90EE90" stroke-width="3" stroke-linejoin="round"/>
+  
+  <!-- Smallest inner shield -->
+  <path d="M100,55 L140,75 L140,112 C140,145 122,170 100,180 C78,170 60,145 60,112 L60,75 Z"
+        fill="#0A1F0A" stroke="url(#shieldGrad)" stroke-width="3" stroke-linejoin="round"/>
+</svg>
