@@ -20,7 +20,7 @@ class TimeoutException extends AppException {
 
 /// Authentication-related exceptions
 class AuthException extends AppException {
-  AuthException({required String message, int? statusCode}) : super(message: message, statusCode: statusCode);
+  AuthException({required super.message, super.statusCode});
   
   static const String invalidCredentials = 'Invalid email or password';
   static const String accountNotFound = 'Account not found';
@@ -36,12 +36,12 @@ class ValidationException extends AppException {
 
 /// Server-related exceptions
 class ServerException extends AppException {
-  ServerException({super.message = 'Server error occurred', int? statusCode}) : super(statusCode: statusCode);
+  ServerException({super.message = 'Server error occurred', super.statusCode});
 }
 
 /// File upload exceptions
 class UploadException extends AppException {
-  UploadException({required String message, int? statusCode}) : super(message: message, statusCode: statusCode);
+  UploadException({required super.message, super.statusCode});
 }
 
 /// Location-related exceptions

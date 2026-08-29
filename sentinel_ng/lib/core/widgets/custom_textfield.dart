@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
 
 /// Reusable text field with label, error state and validation support
 class CustomTextField extends StatelessWidget {

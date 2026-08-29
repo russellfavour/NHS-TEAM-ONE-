@@ -3,7 +3,7 @@
 > **Tech Stack**: Flutter (Mobile App) · Next.js 16 + React 19 (Admin Web Portal) · Node.js API Routes · MongoDB (Prisma ORM)
 > **Purpose**: Production-ready crime reporting platform for Nigerian communities. Competition-ready, full TOR compliance.
 >
-> **Architecture Decision**: Hybrid approach — existing Next.js app serves as the single backend server. Flutter mobile app calls the same API routes. Existing `src/app/admin/` pages serve as the admin portal (no need to rebuild from scratch).
+> **Architecture Decision**: Hybrid approach — existing Next.js app serves as the single backend server. Flutter mobile app calls the same API routes. Existing `src/app/admin/` pages serve as the admin portal (there is no need to rebuild from scratch).
 
 ---
 
@@ -194,8 +194,8 @@ export async function auth(request?: NextRequest) {
 ### Step 2.3: Run Prisma Migration (After Schema Changes — See Section 4)
 
 ```bash
-npx prisma migrate dev --name add_flutter_features
-npx prisma generate
+npx prisma format
+npx prisma db push
 ```
 
 ---
@@ -434,8 +434,8 @@ model Report {
 ### 4.3 Run Migration
 
 ```bash
-npx prisma migrate dev --name add_flutter_features
-npx prisma generate
+npx prisma format
+npx prisma db push
 ```
 
 ---
@@ -468,7 +468,7 @@ dependencies:
   geolocator: ^11.0.0
   image_picker: ^1.0.7
   video_player: ^2.8.2
-  record: ^5.0.4
+  record: ^5.0.4  // Experiensimg comapatibility issues With destop
   go_router: ^13.2.0
   flutter_animate: ^4.5.0
   fl_chart: ^0.66.2
@@ -492,7 +492,7 @@ dev_dependencies:
 - [ ] Create `core/widgets/loading_indicator.dart` — Circular progress widget
 - [ ] Create `data/services/api_client.dart` — Dio client with auth interceptor + secure storage
 
-### Phase 5.2: Auth Feature (Days 3–4)
+### Phase 5.2: Auth Feature
 
 Screens: Splash → Onboarding (3 pages) → Login → Register
 
@@ -518,7 +518,7 @@ Screens: Splash → Onboarding (3 pages) → Login → Register
   - Call existing `/api/auth/register` endpoint
   - Navigate to Login screen after registration
 
-### Phase 5.3: Core Features (Days 5–7)
+### Phase 5.3: Core Features 
 
 Screens: HomeDashboard, CrimeMap, SOS, Notifications, Profile + Bottom Navigation
 
@@ -562,7 +562,7 @@ Screens: HomeDashboard, CrimeMap, SOS, Notifications, Profile + Bottom Navigatio
   - Emergency contacts management
   - Settings (app preferences, privacy)
 
-### Phase 5.4: Reporting Wizard (Days 8–10)
+### Phase 5.4: Reporting Wizard 
 
 This is the **heart of your application**. Multi-step guided conversation flow.
 
@@ -983,3 +983,8 @@ Your existing Next.js project already has most of these. Verify versions match:
 *Tech Stack: Flutter (Mobile) · Next.js 16 + React 19 (Admin Web) · Prisma ORM · MongoDB*
 *Architecture Pattern: Clean Architecture with BLoC state management (Flutter) · App Router (Next.js)*
 *Total Screens: 54 (30 mobile + 24 web admin)*
+
+
+flutter run -d chrome --dart-define=API_BASE_URL=https://crime-location-reporting.onrender.com/api
+flutter run -d chrome --dart-define=API_BASE_URL=https://crime-location-reporting.onrender.com
+

@@ -85,7 +85,7 @@
 - ✅ **Zero risk to existing app** — All current API routes remain untouched
 - ✅ **Single database** — No data duplication, no sync issues
 - ✅ **One deployment** — Deploy Next.js once; both Flutter and web apps share it
-- ✅ **Leverages existing admin pages** — Your Next.js already has `src/app/admin/` with reports, users, logs, settings!
+- ✅ **Leverages existing admin pages** — Our Next.js already has `src/app/admin/` with reports, users, logs, settings!
 - ✅ **Prisma schema is shared** — Both Flutter and Next.js use the same ORM definitions
 
 ---
@@ -466,7 +466,7 @@ class ApiService {
 
 ### Backend Sharing Strategy
 
-Your existing Next.js application serves as the **single backend server** for both the Flutter mobile app and the web admin portal. This approach:
+Our existing Next.js application serves as the **single backend server** for both the Flutter mobile app and the web admin portal. This approach:
 
 - ✅ Preserves all existing functionality
 - ✅ Uses a single database (MongoDB)
