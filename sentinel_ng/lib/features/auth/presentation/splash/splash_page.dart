@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/constants/app_routes.dart';
 
 class SplashPage extends StatefulWidget {
@@ -61,7 +60,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Shield logo with subtle glow
+                  // Shield icon with subtle glow
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -73,17 +72,25 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                           shape: BoxShape.circle,
                           gradient: RadialGradient(
                             colors: [
-                              const Color(0xFF4CAF50).withValues(alpha: 0.3),
+                              const Color(0xFF4CAF50).withOpacity(0.3),
                               Colors.transparent,
                             ],
                           ),
                         ),
                       ),
-                      // Shield SVG logo
-                      SvgPicture.asset(
-                        'assets/icons/splash_logo.svg',
-                        width: 160,
-                        height: 200,
+                      // Shield icon (replacing SVG)
+                      Container(
+                        width: 120,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF7CFC00).withOpacity(0.2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.shield_outlined,
+                          size: 80,
+                          color: const Color(0xFF7CFC00),
+                        ),
                       ),
                     ],
                   ),
@@ -148,7 +155,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                         'LOADING...',
                         style: TextStyle(
                           fontSize: 14,
-                          color: const Color(0xFF4CAF50).withValues(alpha: 0.8),
+                          color: const Color(0xFF4CAF50).withOpacity(0.8),
                           letterSpacing: 2,
                           fontWeight: FontWeight.w500,
                         ),

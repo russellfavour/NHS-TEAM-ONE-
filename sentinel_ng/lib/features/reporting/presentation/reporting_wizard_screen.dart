@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/services/api_service.dart';
+import '../../../data/models/crime_report_model.dart';
 
 /// Multi-step crime reporting wizard - Complete implementation matching designs
 class ReportingWizardScreen extends StatefulWidget {
@@ -208,12 +210,49 @@ class _ReportingWizardScreenState extends State<ReportingWizardScreen> {
     return Card(margin: EdgeInsets.only(bottom: 8), child: Padding(padding: EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: TextStyle(fontWeight: FontWeight.bold)), SizedBox(height: 4), Text(content)])));
   }
 
-  void _nextStep() {
+  void _nextStep() async {
     if (_currentStep == steps.length - 1) {
       // Submit report
-      Navigator.of(context).pushReplacementNamed('/report-submitted');
+      await _submitReport();
     } else {
       setState(() => _currentStep++);
+    }
+  }
+
+  Future<void> _submitReport() async {
+    try {
+      final apiService = ApiService();
+      
+      // Prepare report data
+      final reportData = CreateReportRequest(
+        type: selectedCrimeType ?? 'Others',
+        description: description,
+        location: locationData ?? {'type': 'Point', 'coordinates': [0.0, 0.0]},
+        mediaUrls: mediaUrls.isNotEmpty ? mediaUrls : null,
+        isAnonymous: isAnonymous,
+      ).toJson();
+
+      // Add witness and suspect info if provided
+      if (witnesses.isNotEmpty) {
+        reportData['witnesses'] = witnesses;
+      }
+      if (suspectInfo.isNotEmpty) {
+        reportData['suspectInfo'] = suspectInfo;
+      }
+
+      await apiService.createReport(reportData);
+
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const ReportSubmittedScreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to submit report: $e'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/constants/app_routes.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -19,19 +18,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
       'title': 'Report Crimes',
       'subtitle': 'In Real-time',
       'description': 'Help Keep your community safe by reporting crimes instantly and anonymously.',
-      'illustration': 'assets/icons/onboarding1.svg',
+      'icon': Icons.report_problem,
+      'color': Color(0xFF4CAF50),
     },
     {
       'title': 'Get Safe Routes',
       'subtitle': 'and Alerts',
       'description': 'Find the safest routes, receive alerts and avoid dangerous areas in real-time.',
-      'illustration': 'assets/icons/onboarding2.svg',
+      'icon': Icons.map_outlined,
+      'color': Color(0xFF2196F3),
     },
     {
       'title': 'Stronger Together',
       'subtitle': 'Safer Together',
       'description': 'Join a community that looks out for each other and builds a safer Nigeria',
-      'illustration': 'assets/icons/onboarding3.svg',
+      'icon': Icons.people_outline,
+      'color': Color(0xFFFF9800),
     },
   ];
 
@@ -73,11 +75,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Illustration
-                        SvgPicture.asset(
-                          page['illustration'] as String,
-                          width: 300,
-                          height: 250,
+                        // Icon illustration (replacing SVG)
+                        Container(
+                          width: 180,
+                          height: 180,
+                          decoration: BoxDecoration(
+                            color: (page['color'] as Color).withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            page['icon'] as IconData,
+                            size: 90,
+                            color: page['color'] as Color,
+                          ),
                         ),
                         const SizedBox(height: 40),
 
