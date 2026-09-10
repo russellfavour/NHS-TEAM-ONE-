@@ -32,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.alertRed),
             onPressed: () {
-              context.read<AuthBloc>().add(const LogoutEvent());
+              context.read<AuthBloc>().add(LogoutEvent());
               Navigator.pop(dialogContext);
               context.go('/login');
             },

@@ -243,7 +243,7 @@ class _AiAssistantScreenState extends State<AiAssistantScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Row(children: [
+        title: Row(children: [
           Container(
             width: 36,
             height: 36,

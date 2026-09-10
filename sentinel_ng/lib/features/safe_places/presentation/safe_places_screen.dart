@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -35,7 +36,7 @@ class _SafePlacesScreenState extends State<SafePlacesScreen> {
   int _selectedCategory = 0;
   bool _loading = false;
   String? _error;
-  List<GeocodingService.GeoResult> _places = const [];
+  List<GeoResult> _places = const [];
   Position? _userPosition;
   double _centerLat = 6.5244; // Lagos default
   double _centerLng = 3.3792;
@@ -214,7 +215,7 @@ class _SafePlacesScreenState extends State<SafePlacesScreen> {
     );
   }
 
-  Widget _placeTile(GeocodingService.GeoResult place, _PlaceCategory category) {
+  Widget _placeTile(GeoResult place, _PlaceCategory category) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: InkWell(
@@ -245,7 +246,7 @@ class _SafePlacesScreenState extends State<SafePlacesScreen> {
     );
   }
 
-  void _showPlaceSheet(GeocodingService.GeoResult place) {
+  void _showPlaceSheet(GeoResult place) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

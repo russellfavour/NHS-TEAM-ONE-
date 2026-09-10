@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 /// A lightweight, dependency-free OpenStreetMap tile map widget.
@@ -231,7 +232,7 @@ class _OSMMapWidgetState extends State<OSMMapWidget> {
       return Listener(
         onPointerSignal: (event) {
           // Mouse wheel zoom (web / desktop).
-          if (event is PointerScrollEvent && event.scrollDelta.dy != 0) {
+          if (event is PointerSignalEvent && event is PointerScrollEvent && event.scrollDelta.dy != 0) {
             final factor = event.scrollDelta.dy > 0 ? 1 / 1.2 : 1.2;
             _zoomBy(factor, anchor: event.position);
           }
@@ -240,11 +241,11 @@ class _OSMMapWidgetState extends State<OSMMapWidget> {
           onPanUpdate: (details) => _panBy(details.delta, size),
           onScaleUpdate: (details) {
             if (details.scale != 1.0) {
-              _zoomBy(details.scale, anchor: details.focal);
+              _zoomBy(details.scale, anchor: details.focalPoint);
             }
             // Two-finger pan while pinching.
-            if (details.panTranslation != Offset.zero) {
-              _panBy(details.panTranslation, size);
+            if (details.focalPointDelta != Offset.zero) {
+              _panBy(details.focalPointDelta, size);
             }
           },
           onTapUp: (details) {
@@ -394,7 +395,7 @@ class _OSMMapWidgetState extends State<OSMMapWidget> {
   }
 
   List<_TileCoord> _visibleTiles(Size size) {
-    final z = _zoom.round().clamp(_minZoom, _maxZoom);
+    final z = (_zoom.round().clamp(_minZoom, _maxZoom)).toInt();
     final worldPx = _tileSize * math.pow(2, z).toDouble();
     final tilesPerWorld = (worldPx / _tileSize).round();
 

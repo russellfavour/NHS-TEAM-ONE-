@@ -214,7 +214,7 @@ Future<Position> _resolveUserPosition() async {
       locationSettings: const LocationSettings(accuracy: LocationAccuracy.best, timeLimit: Duration(seconds: 10)),
     );
   } catch (_) {
-    return Position(latitude: _defaultLat, longitude: _defaultLng, timestamp: DateTime.now(), accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0, altitudeAccuracy: 0);
+    return Position(latitude: _defaultLat, longitude: _defaultLng, timestamp: DateTime.now(), accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0, altitudeAccuracy: 0, headingAccuracy: 0);
   }
 }
 
@@ -297,8 +297,8 @@ class _HomeDashboardState extends State<HomeDashboard> {
 
   String get _greetingName {
     final authState = context.watch<AuthBloc>().state;
-    if (authState is AuthAuthenticated && authState.user.name.isNotEmpty) {
-      return authState.user.name.trim().split(RegExp(r'\s+')).first;
+    if (authState is AuthAuthenticated && authState.user.name != null && authState.user.name!.isNotEmpty) {
+      return authState.user.name!.trim().split(RegExp(r'\s+')).first;
     }
     return 'there';
   }
@@ -1156,8 +1156,8 @@ class _ProfilePageState extends State<ProfilePage> {
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
       setState(() {
-        _name = authState.user.name.isNotEmpty ? authState.user.name : null;
-        _email = authState.user.email.isNotEmpty ? authState.user.email : null;
+        _name = authState.user.name != null && authState.user.name!.isNotEmpty ? authState.user.name : null;
+        _email = authState.user.email != null && authState.user.email!.isNotEmpty ? authState.user.email! : null;
         _imageUrl = authState.user.image;
       });
     }
@@ -1200,7 +1200,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.alertRed),
             onPressed: () {
-              context.read<AuthBloc>().add(const LogoutEvent());
+              context.read<AuthBloc>().add(LogoutEvent());
               Navigator.pop(dialogContext);
               context.go('/login');
             },

@@ -3,6 +3,40 @@ import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
 
+/// A geocoded place result from Nominatim.
+class GeoResult {
+  final double lat;
+  final double lng;
+  final String displayName;
+  const GeoResult({required this.lat, required this.lng, required this.displayName});
+}
+
+/// A computed driving route from OSRM.
+class RouteResult {
+  /// Ordered [lng, lat] coordinate pairs.
+  final List<List<double>> coordinates;
+  final double distanceMeters;
+  final double durationSeconds;
+
+  const RouteResult({
+    required this.coordinates,
+    required this.distanceMeters,
+    required this.durationSeconds,
+  });
+
+  String get distanceDisplay {
+    if (distanceMeters < 1000) return '${distanceMeters.round()} m';
+    return '${(distanceMeters / 1000).toStringAsFixed(1)} km';
+  }
+
+  String get durationDisplay {
+    final minutes = (durationSeconds / 60).round();
+    if (minutes < 60) return '$minutes min';
+    final hours = minutes ~/ 60;
+    return '${hours}h ${minutes % 60}min';
+  }
+}
+
 /// Free geocoding + routing built on public OpenStreetMap services.
 ///
 /// - Nominatim (https://nominatim.openstreetmap.org) for address search,
@@ -34,40 +68,6 @@ class GeocodingService {
       await Future<void>.delayed(const Duration(milliseconds: 1050) - elapsed);
     }
     _lastNominatimRequest = DateTime.now();
-  }
-
-  /// A geocoded place.
-  class GeoResult {
-    final double lat;
-    final double lng;
-    final String displayName;
-    const GeoResult({required this.lat, required this.lng, required this.displayName});
-  }
-
-  /// A computed driving route.
-  class RouteResult {
-    /// Ordered [lng, lat] coordinate pairs.
-    final List<List<double>> coordinates;
-    final double distanceMeters;
-    final double durationSeconds;
-
-    const RouteResult({
-      required this.coordinates,
-      required this.distanceMeters,
-      required this.durationSeconds,
-    });
-
-    String get distanceDisplay {
-      if (distanceMeters < 1000) return '${distanceMeters.round()} m';
-      return '${(distanceMeters / 1000).toStringAsFixed(1)} km';
-    }
-
-    String get durationDisplay {
-      final minutes = (durationSeconds / 60).round();
-      if (minutes < 60) return '$minutes min';
-      final hours = minutes ~/ 60;
-      return '${hours}h ${minutes % 60}min';
-    }
   }
 
   /// Search for addresses/places by free text. Returns up to [limit] results.

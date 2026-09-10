@@ -3,6 +3,7 @@ import 'dart:io' show File;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -257,7 +258,7 @@ class _ReportingWizardScreenState extends State<ReportingWizardScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
-      if (permission != LocationPermission.granted) throw Exception('denied');
+      if (permission != LocationPermission.always) throw Exception('denied');
 
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(accuracy: LocationAccuracy.best, timeLimit: Duration(seconds: 15)),
@@ -278,7 +279,7 @@ class _ReportingWizardScreenState extends State<ReportingWizardScreen> {
 
   Future<void> _showAddressSearchDialog() async {
     final controller = TextEditingController();
-    List<GeocodingService.GeoResult>? results;
+    List<GeoResult>? results;
     bool searching = false;
 
     await showDialog(
@@ -407,14 +408,14 @@ class _ReportingWizardScreenState extends State<ReportingWizardScreen> {
       const SizedBox(height: 16),
       TextField(
         controller: TextEditingController(text: suspectInfo['description']),
-        decoration: const InputDecoration(labelText: 'Physical Description', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+        decoration: InputDecoration(labelText: 'Physical Description', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
         maxLines: 3,
         onChanged: (v) => suspectInfo['description'] = v,
       ),
       const SizedBox(height: 16),
       TextField(
         controller: TextEditingController(text: suspectInfo['vehicle']),
-        decoration: const InputDecoration(labelText: 'Vehicle Information', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+        decoration: InputDecoration(labelText: 'Vehicle Information', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
         maxLines: 2,
         onChanged: (v) => suspectInfo['vehicle'] = v,
       ),
@@ -506,11 +507,11 @@ class _ReportingWizardScreenState extends State<ReportingWizardScreen> {
 
   Future<void> _pickMedia(ImageSource source, {required bool video}) async {
     try {
-      final List<XFile>? picked = video
-          ? await _picker.pickVideo(source: source, maxWidth: 1920)
+      final XFile? picked = video
+          ? await _picker.pickVideo(source: source)
           : await _picker.pickImage(source: source, imageQuality: 85);
       if (picked == null || !mounted) return;
-      setState(() => _evidenceFiles.addAll(picked));
+      setState(() => _evidenceFiles.add(picked));
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Could not pick media: $e')));

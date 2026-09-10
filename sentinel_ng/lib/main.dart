@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:web/web.dart' as web;
 
 import 'app.dart';
 import 'core/services/api_service.dart';
-import 'features/auth/bloc/auth_bloc.dart';
 
 // Compile-time constant (required for Flutter Web — String.fromEnvironment
 // can only be used in a const context there). Override with:
@@ -36,6 +34,7 @@ void main() async {
 
   // Initialize Hive for local storage
   await Hive.initFlutter();
+  await Hive.openBox('savedLocations');
 
   // Configure API service with environment-based base URL
   final baseUrl = _apiBaseUrlOverride.isNotEmpty ? _apiBaseUrlOverride : _defaultBaseUrl();
