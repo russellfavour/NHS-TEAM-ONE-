@@ -50,6 +50,15 @@ class AuthAuthenticated extends AuthState {
 
 class AuthUnauthenticated extends AuthState {}
 
+/// Registration succeeded but the backend requires email verification before a
+/// token is issued. UI should show "check your email" and route to login.
+class AuthRegistered extends AuthState {
+  final String? message;
+  const AuthRegistered({this.message});
+  @override
+  List<Object?> get props => [message];
+}
+
 class AuthError extends AuthState {
   final Failure failure;
   const AuthError({required this.failure});
@@ -93,11 +102,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         email: event.email,
         password: event.password,
       );
-      
-      final userData = response['user'] ?? response;
-      final user = UserModel.fromJson(userData);
-      
-      emit(AuthAuthenticated(user: user));
+
+      // The backend only returns a token when it can issue one immediately.
+      // Normally registration requires email verification first, so there is no
+      // token — surface that instead of faking an authenticated session.
+      if (response['token'] != null) {
+        final userData = response['user'] ?? response;
+        final user = UserModel.fromJson(userData as Map<String, dynamic>);
+        emit(AuthAuthenticated(user: user));
+      } else {
+        emit(const AuthRegistered(
+          message: 'Registration successful. Please check your email to verify your account.',
+        ));
+      }
     } catch (e) {
       emit(AuthError(failure: AuthFailure(message: e.toString())));
     }
@@ -112,11 +129,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final isAuthenticated = await _apiService.isAuthenticated();
     if (isAuthenticated) {
       try {
-        // Try to fetch user profile to verify token is valid
+        // Try to fetch user profile to verify token is valid.
+        // Response shape: { user: {...}, preferences: {...}|null }
         final response = await _apiService.getProfile();
-        final user = UserModel.fromJson(response);
-        emit(AuthAuthenticated(user: user));
+        final dynamic rawUser = response['user'] ?? response;
+        if (rawUser is Map<String, dynamic> && rawUser['id'] != null) {
+          emit(AuthAuthenticated(user: UserModel.fromJson(rawUser)));
+        } else {
+          // Token present but profile unusable — treat as unauthenticated so the
+          // user can log in again rather than getting stuck with an empty profile.
+          await _apiService.logout();
+          emit(AuthUnauthenticated());
+        }
       } catch (_) {
+        // Network hiccup: keep the token (user may be offline) but don't claim
+        // we know who they are. Splash will route to login; a stored token lets
+        // them retry without re-entering credentials on next launch.
         emit(AuthUnauthenticated());
       }
     } else {

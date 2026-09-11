@@ -20,6 +20,11 @@ import 'features/profile/presentation/my_reports_screen.dart';
 import 'features/profile/presentation/safety_score_detail_page.dart';
 import 'features/profile/presentation/emergency_contacts_page.dart';
 import 'features/profile/presentation/saved_locations_page.dart';
+import 'features/assistant/presentation/ai_assistant_screen.dart';
+import 'features/safe_places/presentation/safe_places_screen.dart';
+import 'features/settings/presentation/notification_settings_page.dart';
+import 'features/settings/presentation/settings_page.dart';
+import 'features/media/presentation/media_library_screen.dart';
 
 /// Main application widget with routing and dependency injection
 class SentinelApp extends StatelessWidget {
@@ -81,7 +86,10 @@ class SentinelApp extends StatelessWidget {
         name: 'crime-detail',
         builder: (context, state) {
           final reportId = state.uri.queryParameters['id'] as String? ?? '';
-          return CrimeDetailScreen(reportId: reportId);
+          // Report data may be passed directly via extra for instant display
+          // (e.g. from map marker taps or the home dashboard).
+          final initialData = state.extra is Map<String, dynamic> ? state.extra as Map<String, dynamic> : null;
+          return CrimeDetailScreen(reportId: reportId, initialData: initialData);
         },
       ),
       GoRoute(
@@ -92,7 +100,11 @@ class SentinelApp extends StatelessWidget {
       GoRoute(
         path: '/safe-route',
         name: 'safe-route',
-        builder: (context, state) => const SafeRouteScreen(),
+        builder: (context, state) {
+          // Optional pre-filled destination from "Find Safe Places".
+          final extra = state.extra is Map<String, dynamic> ? state.extra as Map<String, dynamic> : null;
+          return SafeRouteScreen(initialDestination: extra);
+        },
       ),
       GoRoute(
         path: '/my-reports',
@@ -121,6 +133,33 @@ class SentinelApp extends StatelessWidget {
         path: '/saved-locations',
         name: 'saved-locations',
         builder: (context, state) => const SavedLocationsPage(),
+      ),
+
+      // New feature screens
+      GoRoute(
+        path: '/ai-assistant',
+        name: 'ai-assistant',
+        builder: (context, state) => const AiAssistantScreen(),
+      ),
+      GoRoute(
+        path: '/safe-places',
+        name: 'safe-places',
+        builder: (context, state) => const SafePlacesScreen(),
+      ),
+      GoRoute(
+        path: '/notification-settings',
+        name: 'notification-settings',
+        builder: (context, state) => const NotificationSettingsPage(),
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: '/media-library',
+        name: 'media-library',
+        builder: (context, state) => const MediaLibraryScreen(),
       ),
     ],
   );

@@ -8,6 +8,30 @@ import '../../bloc/auth_bloc.dart';
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
+  /// Registration succeeded but requires email verification before a token is
+  /// issued. Show a success dialog, then send the user to login.
+  void _showRegistrationSuccess(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        icon: const Icon(Icons.mark_email_read_outlined, size: 48, color: AppColors.primaryGreen),
+        title: const Text('Check your email'),
+        content: Text(message),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryGreen),
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              context.go(AppRoutes.login);
+            },
+            child: const Text('Go to Login'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final nameController = TextEditingController();
@@ -47,6 +71,7 @@ class RegisterPage extends StatelessWidget {
 
                 BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
                   if (state is AuthAuthenticated) context.go(AppRoutes.home);
+                  else if (state is AuthRegistered) _showRegistrationSuccess(context, state.message ?? 'Registration successful. Please check your email to verify your account.');
                   else if (state is AuthError) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.failure.message)));
                 }, builder: (context, state) {
                   if (state is AuthLoading) return const Center(child: CircularProgressIndicator());

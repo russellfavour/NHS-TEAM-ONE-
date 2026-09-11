@@ -33,14 +33,17 @@ dependencies:
   lottie: ^3.3.1
   
   # Maps & Location
+  # NOTE: No Google Maps — the app renders OpenStreetMap tiles directly via a custom
+  # widget (lib/core/widgets/osm_map.dart) using cached_network_image. Free, open source,
+  # no API key or subscription required on web + mobile.
   geolocator: ^13.0.2
-  google_maps_flutter: ^2.12.1
-  geocoding: ^3.0.0
   
   # Image & Media
   image_picker: ^1.1.2
   video_player: ^2.9.2
   
+
+
   # Utilities
   intl: ^0.20.2
   uuid: ^4.5.1
