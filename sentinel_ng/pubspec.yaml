@@ -42,8 +42,7 @@ dependencies:
   image_picker: ^1.1.2
   video_player: ^2.9.2
   
-  # Web interop (hostname detection for web builds)
-  web: ^1.1.0
+
 
   # Utilities
   intl: ^0.20.2
